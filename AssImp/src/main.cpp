@@ -220,15 +220,15 @@ int main() {
 
             GLCall(glBindVertexArray(VAO));
             glDrawArrays(GL_TRIANGLES, 0, 36);*/
-            static glm::vec3 lightPos1 = glm::vec3(0, 0, 0);
-            static glm::vec3 lightPos2 = glm::vec3(0, 0, 0);
-            static glm::vec3 lightPos3 = glm::vec3(0, 0, 0);
-            static glm::vec3 lightColor1 = glm::vec3(0, 0, 0);
-            static glm::vec3 lightColor2 = glm::vec3(0, 0, 0);
-            static glm::vec3 lightColor3 = glm::vec3(0, 0, 0);
-            static float lightAttenuation1 = 0.5f;
-            static float lightAttenuation2 = 0.5f;
-            static float lightAttenuation3 = 0.5f;
+            static glm::vec3 lightPos1 = glm::vec3(3.75, 0.2, -3.85);
+            static glm::vec3 lightPos2 = glm::vec3(-1.4, -0.3, 0.625);
+            static glm::vec3 lightPos3 = glm::vec3(0.0f, 2.725, 2.5);
+            static glm::vec3 lightColor1 = glm::vec3(0, 0.344f, 1.0f);
+            static glm::vec3 lightColor2 = glm::vec3(1, 1, 0);
+            static glm::vec3 lightColor3 = glm::vec3(1, 1, 1);
+            static float lightAttenuation1 = 0.0f;
+            static float lightAttenuation2 = 0.116f;
+            static float lightAttenuation3 = 0.165f;
 
             ourShader.use();
             ourShader.setMat4f("projection", projection);
