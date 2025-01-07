@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -7,13 +8,13 @@
 #include <src/camera.h>
 #include <src/window.h>
 #include <src/shader.h>
+#include <src/model.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "stb_image.h"
 
 #define PI 3.14159265
 
@@ -180,11 +181,12 @@ int main() {
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 
-
+    
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     const float radius = 10.0f;
 
-    //Model ourModel("C:/Users/Me/MyStuff/Dev/C/LearnOpenGL/LearnOpenGL/src/model/backpack.obj");
+    Shader ourShader("res/1.model_loading.vs", "res/1.model_loading.fs");
+    Model ourModel("C:/Users/Me/MyStuff/Dev/C/AssImp/AssImp/res/model/backpack.obj");
 
     while (!glfwWindowShouldClose(window.windowHandle))
     {
@@ -201,17 +203,11 @@ int main() {
 
             glm::mat4 model = glm::mat4(1.0f);
 
-            //glm::mat3 normalModel = glm::mat3(glm::transpose(glm::inverse(model)));
-            //static float lightPosVec[] = { 0.0f,0.0f,0.0f };
-            static glm::vec3 lightPos = glm::vec3(0, 0, 0);
+            glm::mat4 view = camera.GetViewMatrix();
 
-            glm::mat4 view;
-            view = camera.GetViewMatrix();
+            glm::mat4 projection = glm::perspective(glm::radians(60.0f), (float)window.screenWidth / window.screenHeight, 0.1f, 100.0f);
 
-            glm::mat4 projection;
-
-            projection = glm::perspective(glm::radians(60.0f), (float)window.screenWidth / window.screenHeight, 0.1f, 100.0f);
-            shader.use();
+            /*shader.use();
             shader.setMat4f("model", model);
             //shader.setMat3f("normalModel", normalModel);
             shader.setMat4f("view", view);
@@ -223,10 +219,35 @@ int main() {
             shader.setVec3f("cameraPos", camera.Position);
 
             GLCall(glBindVertexArray(VAO));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);*/
+            static glm::vec3 lightPos1 = glm::vec3(0, 0, 0);
+            static glm::vec3 lightPos2 = glm::vec3(0, 0, 0);
+            static glm::vec3 lightPos3 = glm::vec3(0, 0, 0);
+            static glm::vec3 lightColor1 = glm::vec3(0, 0, 0);
+            static glm::vec3 lightColor2 = glm::vec3(0, 0, 0);
+            static glm::vec3 lightColor3 = glm::vec3(0, 0, 0);
+            static float lightAttenuation1 = 0.5f;
+            static float lightAttenuation2 = 0.5f;
+            static float lightAttenuation3 = 0.5f;
 
+            ourShader.use();
+            ourShader.setMat4f("projection", projection);
+            ourShader.setMat4f("view", view);
+            ourShader.setMat4f("model", model);
+            ourShader.setVec3f("lights[0].viewPosition", glm::vec3(view * glm::vec4(lightPos1, 1.0)));
+            ourShader.setVec3f("lights[0].color", lightColor1);
+            ourShader.setFloat("lights[0].attenuationCoefficient", lightAttenuation1);
+            ourShader.setVec3f("lights[1].viewPosition", glm::vec3(view * glm::vec4(lightPos2, 1.0)));
+            ourShader.setVec3f("lights[1].color", lightColor2);
+            ourShader.setFloat("lights[1].attenuationCoefficient", lightAttenuation2);
+            ourShader.setVec3f("lights[2].viewPosition", glm::vec3(view * glm::vec4(lightPos3, 1.0)));
+            ourShader.setVec3f("lights[2].color", lightColor3);
+            ourShader.setFloat("lights[2].attenuationCoefficient", lightAttenuation3);
+            ourModel.Draw(ourShader);
+
+            
             model = glm::mat4(1.0f);
-            model = glm::translate(model, lightPos);
+            model = glm::translate(model, lightPos1);
             model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
             lightShader.use();
@@ -238,7 +259,33 @@ int main() {
             GLCall(glBindVertexArray(lightVAO));
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
-            glm::translate(model, glm::vec3(5, 2, 1));
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos2);
+            model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+            lightShader.use();
+            lightShader.setMat4f("model", model);
+            lightShader.setMat4f("view", view);
+            lightShader.setMat4f("projection", projection);
+
+
+            GLCall(glBindVertexArray(lightVAO));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, lightPos3);
+            model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+            lightShader.use();
+            lightShader.setMat4f("model", model);
+            lightShader.setMat4f("view", view);
+            lightShader.setMat4f("projection", projection);
+
+
+            GLCall(glBindVertexArray(lightVAO));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -247,7 +294,15 @@ int main() {
             ImGui::ShowDemoWindow(&stupid);
 
             ImGui::Begin("Test");
-            ImGui::DragFloat3("Light Position", glm::value_ptr(lightPos), 0.01f, 0.0f);
+            ImGui::DragFloat3("Light Position1", glm::value_ptr(lightPos1), 0.025f, 0.0f);
+            ImGui::SliderFloat3("Light Color1", glm::value_ptr(lightColor1), 0.0f, 1.0f);
+            ImGui::SliderFloat("Light Attenuation1", &lightAttenuation1, 0.0f, 1.0f);
+            ImGui::DragFloat3("Light Position2", glm::value_ptr(lightPos2), 0.025f, 0.0f);
+            ImGui::SliderFloat3("Light Color2", glm::value_ptr(lightColor2), 0.0f, 1.0f);
+            ImGui::SliderFloat("Light Attenuation2", &lightAttenuation2, 0.0f, 1.0f);
+            ImGui::DragFloat3("Light Position3", glm::value_ptr(lightPos3), 0.025f, 0.0f);
+            ImGui::SliderFloat3("Light Color3", glm::value_ptr(lightColor3), 0.0f, 1.0f);
+            ImGui::SliderFloat("Light Attenuation3", &lightAttenuation3, 0.0f, 1.0f);
 
             ImGui::End();
             ImGui::Render();

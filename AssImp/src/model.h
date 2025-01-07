@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifndef MODEL_H
 #define MODEL_H
 
@@ -26,7 +25,7 @@ using namespace std;
 
 
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+inline unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
 
 class Model
 {
@@ -168,7 +167,7 @@ private:
         // 4. height maps
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-
+        
         // return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, textures);
     }
@@ -208,7 +207,7 @@ private:
 };
 
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
+inline unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
 {
     string filename = string(path);
     filename = directory + '/' + filename;
