@@ -162,8 +162,8 @@ int main() {
     GLCall(glEnableVertexAttribArray(1));
     GLCall(glEnableVertexAttribArray(2));
 
-    Shader lightShader("res\\basicVertex.shader", "res\\fragment.shader");
-    Shader shader("res\\textureVertex.shader", "res\\shadedFragment.shader");
+    Shader lightShader("shaders/basicVertex.shader", "shaders/fragment.shader");
+    Shader shader("shaders/textureVertex.shader", "shaders/shadedFragment.shader");
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -185,7 +185,7 @@ int main() {
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     const float radius = 10.0f;
 
-    Shader ourShader("res/1.model_loading.vs", "res/1.model_loading.fs");
+    Shader ourShader("shaders/1.model_loading.vs", "shaders/1.model_loading.fs");
     Model ourModel("C:/Users/Me/MyStuff/Dev/C/AssImp/AssImp/res/model/backpack.obj");
 
     while (!glfwWindowShouldClose(window.windowHandle))
